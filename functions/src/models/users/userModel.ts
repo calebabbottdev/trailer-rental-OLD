@@ -6,6 +6,12 @@ export type User = {
     lastName: string;
   };
   phoneNumber?: string;
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
   dateOfBirth?: {
     day: number;
     month: number;
