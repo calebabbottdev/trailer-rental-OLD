@@ -1,36 +1,45 @@
-import * as functions from 'firebase-functions';
+import { Response } from 'express';
 import { firestore } from '../../index';
 import { User } from '../../models/users/userModel';
 
-export const updateUser = functions.https.onRequest(
-  async (request, response): Promise<void> => {
-    try {
-      const { userId, name, email } = request.body;
+type Request = {
+  params: { userId: string };
+  body: RequestBody;
+};
 
-      if (!userId) {
-        response.status(400).json({
-          messsage: 'User was not updated.',
-        });
-        return;
-      }
+type RequestBody = {
+  [key: string]: unknown;
+};
 
-      await firestore.collection('users').doc(userId).update({
-        name,
-        email,
+const updateUser = async (request: Request, response: Response) => {
+  try {
+    const { userId } = request.params;
+    const updateData: RequestBody = request.body;
+
+    if (!userId) {
+      return response.status(400).json({
+        message: 'userId is required.',
       });
-
-      const updatedUserDoc = await firestore
-        .collection('users')
-        .doc(userId)
-        .get();
-      const updatedUserData = updatedUserDoc.data() as User;
-
-      response.status(200).json({
-        user: updatedUserData,
-      });
-    } catch (error) {
-      console.error('Error updating user:', error);
-      response.status(500).send('Internal Server Error');
     }
+
+    await firestore.collection('users').doc(userId).update(updateData);
+
+    const updatedUserDoc = await firestore
+      .collection('users')
+      .doc(userId)
+      .get();
+    const updatedUserData = updatedUserDoc.data() as User;
+
+    return response.status(200).json({
+      user: updatedUserData,
+      message: 'User updated successfully.',
+    });
+  } catch (error) {
+    console.error('Error updating user: ', error);
+    return response.status(500).json({
+      error: 'Internal Server Error',
+    });
   }
-);
+};
+
+export { updateUser };
