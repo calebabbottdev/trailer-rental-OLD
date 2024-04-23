@@ -3,12 +3,34 @@ import { firestore } from '../../index';
 import { Trailer } from '../../models/trailers/trailerModel';
 
 type Request = {
-  body: Trailer;
+  body: {
+    type: Trailer['type'];
+    address: Trailer['address'];
+    dailyRate: Trailer['dailyRate'];
+    userId: Trailer['owner']['ownerId'];
+    firstName: Trailer['owner']['ownerName']['firstName'];
+    lastName: Trailer['owner']['ownerName']['lastName'];
+  };
 };
 
 const createTrailer = async (request: Request, response: Response) => {
   try {
-    const trailerData = request.body;
+    const { type, address, dailyRate, userId, firstName, lastName } =
+      request.body;
+
+    const trailerData = {
+      type,
+      address,
+      dailyRate,
+      owner: {
+        ownerId: userId,
+        ownerName: {
+          firstName,
+          lastName,
+        },
+      },
+      searchableTerms: [address.city.toLowerCase(), type.toLowerCase()],
+    };
 
     const newTrailerRef = await firestore
       .collection('trailers')

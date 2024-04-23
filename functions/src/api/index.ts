@@ -9,5 +9,7 @@ export { createUser, getAllUsers, updateUser, deleteUser };
 // Trailers
 import { createTrailer } from './trailers/createTrailer';
 import { getAllTrailers } from './trailers/getAllTrailers';
+import { updateTrailer } from './trailers/updateTrailer';
+import { getTrailerById } from './trailers/getTrailerById';
 
-export { createTrailer, getAllTrailers };
+export { createTrailer, getAllTrailers, updateTrailer, getTrailerById };

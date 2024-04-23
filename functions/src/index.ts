@@ -9,6 +9,8 @@ import {
   deleteUser,
   createTrailer,
   getAllTrailers,
+  updateTrailer,
+  getTrailerById,
 } from './api';
 
 admin.initializeApp();
@@ -24,6 +26,8 @@ export { createUser, deleteUser };
 // Trailers
 app.post('/trailers/create-trailer', createTrailer);
 app.get('/trailers/get-all-trailers', getAllTrailers);
+app.get('/trailers/get-trailer-by-id/:trailerId', getTrailerById);
+app.patch('/trailers/update-trailer/:trailerId', updateTrailer);
 
 // Products
 
